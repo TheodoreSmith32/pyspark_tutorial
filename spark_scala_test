@@ -1,0 +1,12 @@
+val a = sc.parallelize(List("Theo","Yeye","Haha"),3)
+val b = a.map(a=> (a,"Student"))
+val c = b.collect
+
+
+val arraynum = Array(1,2,3,4,5)
+val y1 = "a"
+val rdd1 = sc.parallelize(arraynum).map(y=>List(y,y1,y)).collect
+
+
+val list = sc.parallelize(List(1,2,3)).flatMap(x=>List(x,x))
+val b = list.collect
