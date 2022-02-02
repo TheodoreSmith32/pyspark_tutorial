@@ -68,3 +68,9 @@ purchaseByCustomerPerHour.writeStream\
 .queryName("customer_buy")\
 .outputMode("complete")\
 .start()
+
+spark.sql("""
+SELECT *
+FROM customer_buy
+""")\
+.show(5)
