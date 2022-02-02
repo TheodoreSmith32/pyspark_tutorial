@@ -1,0 +1,108 @@
+import java.util.Date 
+object HelloWorld{
+  def main(args: Array[String]){
+    var name = "Theo"
+    var age = 22
+    println("Hello my name is " + name +" iam "+age+" years old")
+    println(s"Hello my name is $name iam $age years old")
+  }
+  def rumus(args: Array[String]){
+    var x = 4 
+    if(x == 4){
+      println("X itu 4 ")
+    }else{
+     println("X bukan 4") 
+    }
+    println(if(x>5)"x lebih besar dr 4" else "x lebih kecil dari 4")
+  }
+  def loop(args: Array[String]){
+    var a = 0
+     while(a<2){
+       a+=1
+      println("A = "+ a)
+     }
+    var b = 0
+    do{
+      println("B = "+ b) 
+      b+=1
+      
+    }while(b<10)
+  }
+   def test(args: Array[String]){
+     for(x <- 1 to 5 ){
+       println("x using to "+ x)
+     }
+       for(b <- 1 until 3){
+       println("b using until "+ b)
+     }
+     for (i <- 1 to 3 ; h <- 4 to 5){
+       println("i and h "+ i+ " "+h)
+     }
+     val lst = List(1,2,3,4,10)
+     
+     for(p <- lst){
+       println("This is List "+ p)
+     }
+     val rest = for{i <- lst;if i < 4 }yield{
+       i*i 
+     }
+      println("This rest "+ rest)
+   }
+   def coba1(args: Array[String]){
+     val age = 50
+     val testing = age match{
+       case 50 => age
+       case 25 => println("25")
+       case _ => println("Tidak Ada")
+     }
+     println("umur : " + testing)
+   }
+    //function type
+   object math{
+     def math1(x:Int,y:Int) :Int = (x+y)*x
+     //single args
+     def math2(x:Int) = x*x+x
+     def math3(x:Int = 10) = (x+x)/2
+   }
+  
+   def function1(x:Int,y:Int) : Int = {
+    //return
+     x*y
+   }
+    def function2(x:Int,y:Int) = x+y
+   def print1(x:Int , y:Int): Unit = {
+     println(x+y)
+   }
+   //high order function
+   def orderfunctions(x:Double,y:Double,z:Double,v:(Double,Double)=>Double):Double = v(v(x,y),z)
+   //partial function
+   
+   def partialfunc(args: Array[String]){
+     val sum = (a:Int,b:Int,c : Int) => a+b+c
+     val x = sum(10,4,_:Int)
+     println(x(3))
+   }
+   def log(date: Date ,message: String){
+     println(date+" "+message)
+   }
+  val numb = 150
+  val add = (x:Int)=>x+numb+10
+   def mainfunction(args: Array[String]){
+     println(function2(2,5))
+     println(function1(4,9))
+     println(math.math1(3,6))
+     println(math math2 5 )
+     println(math.math3())
+     print1(40,100)
+   }
+   def mainfunction2(args: Array[String]){
+     val result = orderfunctions(4,6,5,(x,y)=>x*y)
+     println(result)
+     val date = new Date
+     val newlog = log(date,_:String)
+     newlog("Hellow")
+     newlog("Hei")
+     println(add(4))
+   }
+}
+
