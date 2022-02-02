@@ -1,0 +1,70 @@
+import pyspark.sql.functions as F
+from pyspark import SparkContext, SparkConf
+from pyspark.sql import *
+from pyspark.sql.functions import max
+from pyspark.sql.functions import min 
+from pyspark.sql.functions import avg
+from pyspark.sql.functions import desc 
+from pyspark.sql.functions import window, column, desc, col
+from pyspark.sql.types import *
+from pyspark.sql.types import StructField, StructType, StringType, LongType
+from pyspark.ml.feature import Imputer, Binarizer
+import pandas as pd
+from datetime import datetime, timedelta
+
+
+spark = (SparkSession
+                .builder
+                .appName('data_query_theo')
+                .getOrCreate())
+#csv_read                
+data_pega = '/user/hdp_dev/test/datates.csv'
+data = spark.read.option("inferSchema","true").option("header","true").csv(data_pega)
+
+
+#staticData
+staticDataFrame = spark.read.format("csv")\
+.option("header", "true")\
+.option("inferSchema", "true")\
+.load("/user/hdp_dev/test/daily_data/*.csv")
+
+staticDataFrame.createOrReplaceTempView("retail_data")
+staticSchema = staticDataFrame.schema
+
+
+staticDataFrame\
+.selectExpr(
+"CustomerId",
+"(UnitPrice * Quantity) as total_cost",
+"InvoiceDate")\
+.groupBy(
+col("CustomerId"), window(col("InvoiceDate"), "1 day"))\
+.sum("total_cost")\
+.show(5)
+
+
+
+#streamingData
+streamingDataFrame = spark.readStream\
+.schema(staticSchema)\
+.option("maxFilesPerTrigger", 1)\
+.format("csv")\
+.option("header", "true")\
+.load("/user/hdp_dev/test/daily_data/*.csv")
+
+streamingDataFrame.isStreaming 
+
+purchaseByCustomerPerHour = streamingDataFrame\
+.selectExpr(
+"CustomerId",
+"(UnitPrice * Quantity) as total_cost",
+"InvoiceDate")\
+.groupBy(
+col("CustomerId"), window(col("InvoiceDate"), "1 day"))\
+.sum("total_cost")
+
+purchaseByCustomerPerHour.writeStream\
+.format("memory")\
+.queryName("customer_buy")\
+.outputMode("complete")\
+.start()
