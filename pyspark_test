@@ -74,3 +74,35 @@ SELECT *
 FROM customer_buy
 """)\
 .show(5)
+
+
+df.first()
+
+myManualSchema = StructType([
+StructField("DEST_COUNTRY_NAME", StringType(), True),
+StructField("ORIGIN_COUNTRY_NAME", StringType(), True),
+StructField("count", LongType(), False, metadata={"hello":"world"})
+])
+
+df = spark.read.format("json").schema(myManualSchema).load("/user/hdp_dev/test/daily_data/2015-summary.json").show()
+
+
+
+#ROW
+
+myRow = Row("Hello", None, 1, False)
+myRow[0],myRow[1],myRow[3]
+
+#TEMP_VIEW
+df = spark.read.format("json").load("/user/hdp_dev/test/daily_data/2015-summary.json")
+df.createOrReplaceTempView("dfTable")
+
+
+#DDL_COLUMN
+df = spark.read.format("json").load("/user/hdp_dev/test/daily_data/2015-summary.json")
+df.selectExpr("*","(DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME)as Negara")\
+.show(2)
+
+df.withColumn("Col_1",expr("DEST_COUNTRY_NAME=ORIGIN_COUNTRY_NAME"))
+
+nameCol = df.withColumnRenamed("DEST_COUNTRY_NAME", "dest").show(2)
