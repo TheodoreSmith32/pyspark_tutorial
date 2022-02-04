@@ -12,7 +12,21 @@ from pyspark.ml.feature import Imputer, Binarizer
 import pandas as pd
 from datetime import datetime, timedelta
 
-
+spark = (SparkSession
+                .builder
+                .appName('data_query')
+                .config('spark.driver.memory', '8g')
+                .config('spark.executor.cores', '15')
+                .config("spark.executor.instances", '3')
+                .config('spark.executor.memory', '8g')
+                .config("spark.dynamicAllocation.enabled", "True")
+                .config("spark.dynamicAllocation.maxExecutor", "15")
+                .config("spark.driver.memoryOverhead", '512')
+                .config("spark.executor.memoryOverhead", '512')
+                .config("hive.exec.dynamic.partition.mode", "nonstrict")
+                .enableHiveSupport()
+                .getOrCreate())
+                
 spark = (SparkSession
                 .builder
                 .appName('data_query_theo')
@@ -106,3 +120,8 @@ df.selectExpr("*","(DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME)as Negara")\
 df.withColumn("Col_1",expr("DEST_COUNTRY_NAME=ORIGIN_COUNTRY_NAME"))
 
 nameCol = df.withColumnRenamed("DEST_COUNTRY_NAME", "dest").show(2)
+
+#FILTER_WHERE
+df.filter(col("count")>50)
+df.where(col("count") < 2).where(col("ORIGIN_COUNTRY_NAME") != "Croatia")\
+.show(2)
