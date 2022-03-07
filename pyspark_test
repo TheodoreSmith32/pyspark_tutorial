@@ -66,6 +66,9 @@ streamingDataFrame = spark.readStream\
 .option("header", "true")\
 .load("/user/hdp_dev/test/daily_data/*.csv")
 
+
+streamingData = spark.readStream.schema(schemaData).option("maxFilesPerTrigger", 1).csv("/user/hdp_dev/test/daily_data/*")
+
 streamingDataFrame.isStreaming 
 
 purchaseByCustomerPerHour = streamingDataFrame\
