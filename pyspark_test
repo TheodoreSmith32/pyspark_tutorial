@@ -12,6 +12,12 @@ from pyspark.ml.feature import Imputer, Binarizer
 import pandas as pd
 from datetime import datetime, timedelta
 
+
+
+#PYSPARK change job yarn pool
+conf spark.yarn.queue="que_name"
+
+
 spark = (SparkSession
                 .builder
                 .appName('data_query')
